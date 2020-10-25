@@ -1,5 +1,4 @@
 #include<vector>
-#include<pair>
 
 using namespace std;
 void MaxSumOfSunArray(vector<double> v){
