@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.15)
 
 include_directories(/下载/boost_1_70_0/boost/)
 link_directories(/下载/boost_1_70_0/boost/lib/)
