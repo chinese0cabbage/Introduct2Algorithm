@@ -8,4 +8,4 @@ project(Introduct2Algorithm)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Introduct2Algorithm main.cpp)
+add_executable(Introduct2Algorithm main.cpp chapter4/MaxSunArray.cpp chapter4/MaxSunArray.h)
