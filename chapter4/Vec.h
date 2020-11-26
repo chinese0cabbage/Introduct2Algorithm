@@ -8,11 +8,15 @@
 #include <vector>
 #include "iostream"
 
+
 template<typename T>
 class Vec {
 private:
     T *_localArr;
     int _len;
+#ifdef OPERATE_MEMORY
+    T *_begin,*_end;
+#endif
 public:
     Vec(T *localArr, int len) : _localArr(localArr), _len(len) {}
 
@@ -25,10 +29,14 @@ public:
             newArr[i - begin] = localArr[i];
         _localArr = newArr;
     }
+#ifdef OPERATE_MEMORY
+    Vec(T *begin, T *end):_begin(begin),_end(end),_len((end-begin)/sizeof(T)){}
+#endif
 
-    void show(){
-        for (int i = 0; i < _len; ++i)
-            std::cout<<_localArr[i]<<'\t';
+    friend std::ostream &operator << (std::ostream &os, Vec &vec) {
+        for (int i = 0; i < vec._len; ++i) {
+            os<<vec._localArr[i]<<'\t';
+        }
     }
 };
 
