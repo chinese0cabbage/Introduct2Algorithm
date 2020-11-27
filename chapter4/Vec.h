@@ -24,19 +24,19 @@ public:
 
     Vec(const T *localArr, int begin, int end) {
         _len = end - begin;
-        T *newArr = new T(_len);
+        _localArr = new T(_len);
         for (int i = begin; i < end; ++i)
-            newArr[i - begin] = localArr[i];
-        _localArr = newArr;
+            _localArr[i - begin] = localArr[i];
     }
 #ifdef OPERATE_MEMORY
     Vec(T *begin, T *end):_begin(begin),_end(end),_len((end-begin)/sizeof(T)){}
 #endif
 
-    friend std::ostream &operator << (std::ostream &os, Vec &vec) {
+    friend std::ostream &operator << (std::ostream &os,const Vec &vec) {
         for (int i = 0; i < vec._len; ++i) {
             os<<vec._localArr[i]<<'\t';
         }
+        return os;
     }
 };
 
