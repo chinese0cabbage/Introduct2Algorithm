@@ -5,8 +5,11 @@
 #ifndef INTRODUCT2ALGORITHM_VEC_H
 #define INTRODUCT2ALGORITHM_VEC_H
 
+#define OPERATE_MEMORY
+
 #include <vector>
 #include "iostream"
+#include "malloc.h"
 
 
 template<typename T>
@@ -15,7 +18,7 @@ private:
     T *_localArr;
     int _len;
 #ifdef OPERATE_MEMORY
-    T *_begin,*_end;
+    T *_begin, *_end;
 #endif
 public:
     Vec(T *localArr, int len) : _localArr(localArr), _len(len) {}
@@ -24,19 +27,27 @@ public:
 
     Vec(const T *localArr, int begin, int end) {
         _len = end - begin;
-        T *newArr = new T(_len);
+        _localArr = (T *) malloc(sizeof(T) * _len);
         for (int i = begin; i < end; ++i)
-            newArr[i - begin] = localArr[i];
-        _localArr = newArr;
+            _localArr[i - begin] = localArr[i];
     }
+
 #ifdef OPERATE_MEMORY
-    Vec(T *begin, T *end):_begin(begin),_end(end),_len((end-begin)/sizeof(T)){}
+
+    Vec(T *begin, T *end) {
+        _begin = begin;
+        _end = end;
+        _len = end - begin;
+        _localArr = _begin;
+    }
+
 #endif
 
-    friend std::ostream &operator << (std::ostream &os, Vec &vec) {
+    friend std::ostream &operator<<(std::ostream &os, const Vec &vec) {
         for (int i = 0; i < vec._len; ++i) {
-            os<<vec._localArr[i]<<'\t';
+            os << vec._localArr[i] << '\t';
         }
+        return os;
     }
 };
 
