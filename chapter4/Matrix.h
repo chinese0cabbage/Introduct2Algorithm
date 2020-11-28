@@ -12,8 +12,10 @@ template<typename T>
 class Matrix {
 private:
     std::vector<Vec<T>> _vecs;
+    T *_localArr, *head, *tail;
+    int _row,_col;
 public:
-    Matrix(T *originArray, int row, int col);//一个矩阵拆分为多个行向量，每一个行向量都是一个Vec，但其内存相连接的属性不更改，可以连续访问
+    Matrix(T *originArray, int row, int col);
 
     Matrix(std::vector<T> v, int row, int col);
 

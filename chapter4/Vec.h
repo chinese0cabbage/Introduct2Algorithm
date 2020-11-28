@@ -10,6 +10,7 @@
 #include <vector>
 #include "iostream"
 #include "malloc.h"
+#include "assert.h"
 
 
 template<typename T>
@@ -32,6 +33,8 @@ public:
             _localArr[i - begin] = localArr[i];
     }
 
+    Vec(const Vec<T> &v): _localArr(v._localArr), _len(v._len){}
+
 #ifdef OPERATE_MEMORY
 
     Vec(T *begin, T *end) {
@@ -42,6 +45,50 @@ public:
     }
 
 #endif
+
+    inline const int len() const{return _len;};
+
+    inline const T* arrayPointor() const{return _localArr;};
+
+    const Vec<T> operator+(Vec<T> &v){
+        assert(v.len()==_len);
+        T *result=(T *)malloc(sizeof(T)*_len);
+        auto source=v.arrayPointor();
+        for (int i = 0; i < _len; ++i) {
+            result[i]=source[i]+_localArr[i];
+        }
+        return Vec<T>(result,_len);
+    }
+
+    const void operator+=(Vec<T> &v){
+        for (int i = 0; i < _len; ++i) {
+            _localArr[i]+=v._localArr[i];
+        }
+    }
+
+    const Vec<T> operator*(double times){
+        auto result=(T *)malloc(sizeof(T)*_len);
+        for (int i = 0; i < _len; ++i) {
+            result[i] = _localArr[i] * times;
+        }
+        return Vec<T>(result, _len);
+    }
+
+    const void operator*=(double times){
+        for (int i = 0; i < _len; ++i) {
+            _localArr[i]*=times;
+        }
+    }
+
+    const Vec<T> operator-(Vec<T> &v){
+        return this+v*(-1);
+    }
+
+    const void operator-=(Vec<T> &v){
+        for (int i = 0; i < _len; ++i) {
+            _localArr[i]-=v._localArr[i];
+        }
+    }
 
     friend std::ostream &operator<<(std::ostream &os, const Vec &vec) {
         for (int i = 0; i < vec._len; ++i) {
