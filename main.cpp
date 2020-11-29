@@ -8,6 +8,7 @@ int main() {
     Vec<double> vec1(arr+5,arr+10);
     std::cout << vec1 << std::endl;
     auto v=vec+vec1;
+    v*=10;
     std::cout << v;
     return 0;
 }

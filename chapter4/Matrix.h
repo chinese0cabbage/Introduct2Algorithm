@@ -8,16 +8,16 @@
 #include "iostream"
 #include "Vec.h"
 
-template<typename T>
+template<typename Ty>
 class Matrix {
 private:
-    std::vector<Vec<T>> _vecs;
-    T *_localArr, *head, *tail;
+    std::vector<Vec<Ty>> _vecs;
+    Ty *_localArr, *head, *tail;
     int _row,_col;
 public:
-    Matrix(T *originArray, int row, int col);
+    Matrix(Ty *originArray, int row, int col);
 
-    Matrix(std::vector<T> v, int row, int col);
+    Matrix(std::vector<Ty> v, int row, int col);
 
     void show();
 };
