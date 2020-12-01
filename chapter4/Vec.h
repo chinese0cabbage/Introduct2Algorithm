@@ -11,6 +11,7 @@
 #include "iostream"
 #include "malloc.h"
 #include "assert.h"
+#include "math.h"
 
 
 template<typename Ty>
@@ -90,7 +91,7 @@ public:
         return this + v * (-1);
     }
 
-    const void operator-=(cont Vec<Ty> &v) {
+    const void operator-=(const Vec<Ty> &v) {
         for (int i = 0; i < _len; ++i) {
             _localArr[i] -= v._localArr[i];
         }
@@ -108,14 +109,14 @@ public:
         }
     }
 
-    void T() {
+    inline void T() {
         if (_chart == ROW_VEC)
             _chart = COL_VEC;
         else
             _chart = ROW_VEC;
     }
 
-    const Ty operator[](int index) const{
+    inline const Ty operator[](int index) const{
         return _localArr[index];
     }
 
@@ -128,13 +129,21 @@ public:
         return total;
     }
 
-    const Ty product(const Vec<Ty> &v){
-        assert(_chart==v._chart);
+    inline const Ty product(const Vec<Ty> &v){
+        assert(_chart==v._chart && _len==v._len);
         return this->dot(v);
     }
 
-    const characteristic Type() const{
+    inline const characteristic Type() const{
         return _chart;
+    }
+
+    const double length()const {
+        double total=0;
+        for (int i = 0; i < _len; ++i) {
+            total+=pow(_localArr[i],2);
+        }
+        return sqrt(total);
     }
 
     friend std::ostream &operator<<(std::ostream &os, const Vec &vec) {
