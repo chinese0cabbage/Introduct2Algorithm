@@ -18,8 +18,6 @@ public:
     Matrix(Ty *originArray, int row, int col);
 
     Matrix(std::vector<Ty> v, int row, int col);
-
-    void show();
 };
 
 

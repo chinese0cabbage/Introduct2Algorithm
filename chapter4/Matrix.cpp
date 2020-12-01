@@ -3,8 +3,3 @@
 //
 
 #include "Matrix.h"
-
-template<typename T>
-void Matrix<T>::show() {
-
-}
