@@ -12,12 +12,37 @@ template<typename Ty>
 class Matrix {
 private:
     std::vector<Vec<Ty>> _vecs;
-    Ty *_localArr, *head, *tail;
-    int _row,_col;
+    Ty *_localArr;
+    int _row, _col;
 public:
-    Matrix(Ty *originArray, int row, int col);
+    explicit Matrix(Ty *originArray, int row, int col);
 
-    Matrix(std::vector<Ty> v, int row, int col);
+    explicit Matrix(std::vector<Ty> &v, int row, int col);
+
+    inline const Vec<Ty> &operator[](int i) const {
+        return _vecs.at(i);
+    }
+
+    inline Vec<Ty> col_vec(int i) {
+        Ty *arr = (Ty *) malloc(sizeof(Ty) * _col);
+        for (int j = 0; j < _col; ++j) {
+            arr[j] = _vecs.at(i)[j];
+        }
+        return Vec<Ty>(arr, arr + _col, COL_VEC);
+    }
+
+    inline const int row() const { return _row; }
+
+    inline const int col() const { return _col; }
+
+    friend std::ostream &operator<<(std::ostream &os, Matrix &matrix) {
+        for (int i = 0; i < matrix._row; ++i) {
+            for (int j = 0; j < matrix._row; ++j) {
+                os << matrix._vecs.at(i)[j] << '\t';
+            }
+            os << '\n';
+        }
+    }
 };
 
 
