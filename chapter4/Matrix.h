@@ -8,14 +8,16 @@
 #include "iostream"
 #include "Vec.h"
 
-template<typename T>
+template<typename Ty>
 class Matrix {
 private:
-    std::vector<Vec<T>> _vecs;
+    std::vector<Vec<Ty>> _vecs;
+    Ty *_localArr, *head, *tail;
+    int _row,_col;
 public:
-    Matrix(T *originArray, int row, int col);//一个矩阵拆分为多个行向量，每一个行向量都是一个Vec，但其内存相连接的属性不更改，可以连续访问
+    Matrix(Ty *originArray, int row, int col);
 
-    Matrix(std::vector<T> v, int row, int col);
+    Matrix(std::vector<Ty> v, int row, int col);
 
     void show();
 };
