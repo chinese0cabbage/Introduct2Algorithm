@@ -11,15 +11,16 @@
 #include "iostream"
 #include "malloc.h"
 #include "assert.h"
+#include "math.h"
 
+enum characteristic {
+    ROW_VEC,
+    COL_VEC
+};
 
 template<typename Ty>
 class Vec {
 private:
-    enum characteristic {
-        ROW_VEC,
-        COL_VEC
-    };
     Ty *_localArr;
     int _len;
     characteristic _chart = ROW_VEC;
@@ -28,22 +29,26 @@ private:
     Ty *_begin, *_end;
 #endif
 public:
-    Vec(Ty *localArr, int len) : _localArr(localArr), _len(len) {}
+    Vec(Ty *localArr, int len, characteristic chart = ROW_VEC) : _localArr(localArr), _len(len),
+                                                                 _chart(chart) {}
 
-    Vec(const std::vector<Ty> &v) : _localArr(v.data()), _len(v.size()) {}
+    Vec(const std::vector<Ty> &v, characteristic chart = ROW_VEC) : _localArr(v.data()), _len(v.size()),
+                                                                    _chart(chart) {}
 
-    Vec(const Ty *localArr, int begin, int end) {
+    Vec(const Ty *localArr, int begin, int end, characteristic chart = ROW_VEC) {
         _len = end - begin;
         _localArr = (Ty *) malloc(sizeof(Ty) * _len);
+        _chart = chart;
         for (int i = begin; i < end; ++i)
             _localArr[i - begin] = localArr[i];
     }
 
-    Vec(const Vec<Ty> &v) : _localArr(v._localArr), _len(v._len) {}
+    Vec(const Vec<Ty> &v, characteristic chart = ROW_VEC) : _localArr(v._localArr), _len(v._len),
+                                                            _chart(chart) {}
 
 #ifdef OPERATE_MEMORY
 
-    Vec(Ty *begin, Ty *end) {
+    explicit Vec(Ty *begin, Ty *end) {
         _begin = begin;
         _end = end;
         _len = end - begin;
@@ -90,7 +95,7 @@ public:
         return this + v * (-1);
     }
 
-    const void operator-=(cont Vec<Ty> &v) {
+    const void operator-=(const Vec<Ty> &v) {
         for (int i = 0; i < _len; ++i) {
             _localArr[i] -= v._localArr[i];
         }
@@ -108,33 +113,41 @@ public:
         }
     }
 
-    void T() {
+    inline void T() {
         if (_chart == ROW_VEC)
             _chart = COL_VEC;
         else
             _chart = ROW_VEC;
     }
 
-    const Ty operator[](int index) const{
+    inline const Ty operator[](int index) const {
         return _localArr[index];
     }
 
     const Ty dot(Vec<Ty> &v) const {
         assert(_len == v._len);
-        Ty total=0;
+        Ty total = 0;
         for (int i = 0; i < _len; ++i) {
-            total+=_localArr[i]*v._localArr[i];
+            total += _localArr[i] * v._localArr[i];
         }
         return total;
     }
 
-    const Ty product(const Vec<Ty> &v){
-        assert(_chart==v._chart);
+    inline const Ty product(const Vec<Ty> &v) {
+        assert(_chart == v._chart && _len == v._len);
         return this->dot(v);
     }
 
-    const characteristic Type() const{
+    inline const characteristic Type() const {
         return _chart;
+    }
+
+    const double length() const {
+        double total = 0;
+        for (int i = 0; i < _len; ++i) {
+            total += pow(_localArr[i], 2);
+        }
+        return sqrt(total);
     }
 
     friend std::ostream &operator<<(std::ostream &os, const Vec &vec) {
