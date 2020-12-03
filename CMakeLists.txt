@@ -8,4 +8,4 @@ project(Introduct2Algorithm)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Introduct2Algorithm main.cpp chapter4/MaxSunArray.cpp chapter4/MaxSunArray.h chapter4/Matrix.cpp chapter4/Matrix.h chapter4/Vec.cpp chapter4/Vec.h)
+add_executable(Introduct2Algorithm main.cpp chapter4/MaxSunArray.cpp chapter4/MaxSunArray.h fundamentalType/Matrix.h fundamentalType/Vec.h)
