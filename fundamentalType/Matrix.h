@@ -8,29 +8,37 @@
 #include "iostream"
 #include "Vec.h"
 
+static int count;
 template<typename Ty>
 class Matrix {
 private:
     std::vector<Vec<Ty>> _vecs;
     Ty *_localArr;
     int _row, _col;
+
+    void Multiply(const Matrix<Ty> &left, const Matrix<Ty> &right,
+                  int left_row_start, int left_row_end, int left_col_start, int left_col_end,
+                  Matrix<Ty> &des);
+
 public:
-    explicit Matrix(Ty *originArray, int row, int col){
-        _row=row;
-        _col=col;
-        _localArr=originArray;
+    explicit Matrix(Ty *originArray, int row, int col) {
+        _row = row;
+        _col = col;
+        _localArr = originArray;
         for (int i = 0; i < _row; ++i) {
-            _vecs.push_back(Vec<Ty>(_localArr+i*_col,_localArr+(i+1)*_col));
+            _vecs.push_back(Vec<Ty>(_localArr + i * _col, _localArr + (i + 1) * _col));
         }
     }
 
-    explicit Matrix(std::vector<Ty> &v, int row, int col){
-        Matrix(v.data(),row,col);
+    explicit Matrix(std::vector<Ty> &v, int row, int col) {
+        Matrix(v.data(), row, col);
     }
 
     inline const Vec<Ty> &operator[](int i) const {
         return _vecs.at(i);
     }
+
+    const Matrix<Ty> operator*(Matrix<Ty> &other) const;
 
     inline Vec<Ty> col_vec(int i) {
         Ty *arr = (Ty *) malloc(sizeof(Ty) * _col);
