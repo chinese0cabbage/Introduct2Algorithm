@@ -3,10 +3,11 @@
 //
 
 #ifndef INTRODUCT2ALGORITHM_MATRIX_H
-#define INTRODUCT2ALGORITHM_MATRIX_H
 
 #include "iostream"
 #include "Vec.h"
+
+#define INTRODUCT2ALGORITHM_MATRIX_H
 
 static int count;
 template<typename Ty>
@@ -48,9 +49,11 @@ public:
         return Vec<Ty>(arr, arr + _col, COL_VEC);
     }
 
-    inline const int row() const { return _row; }
+    inline int row() const { return _row; }
 
-    inline const int col() const { return _col; }
+    inline int col() const { return _col; }
+
+    inline
 
     friend std::ostream &operator<<(std::ostream &os, Matrix &matrix) {
         for (int i = 0; i < matrix._row; ++i) {

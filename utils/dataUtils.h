@@ -12,4 +12,11 @@ void interChange(T &a,T &b){
     b=tmp;
 }
 
+template <typename T>
+void interChange(T *a,T *b){
+    T tmp=*a;
+    *a=*b;
+    *b=tmp;
+}
+
 #endif //INTRODUCT2ALGORITHM_DATAUTILS_H

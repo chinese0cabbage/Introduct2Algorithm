@@ -15,6 +15,14 @@ typedef struct imaginaryNumber {
         return imaginaryNumber(realPart * times, imaginaryPart * times);
     }
 
+    const imaginaryNumber operator*(double times, const imaginaryNumber &other) {
+        return other * times;
+    }
+
+    operator int() const {//当前类的转换函数，int a= imaginaryNumber实例将有返回值
+
+    }
+
     inline const imaginaryNumber operator*(const imaginaryNumber &other) const {
         double part1 = (realPart + imaginaryPart) * other.realPart;
         double part2 = (realPart - imaginaryPart) * other.imaginaryPart;

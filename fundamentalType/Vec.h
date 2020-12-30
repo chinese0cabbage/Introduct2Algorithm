@@ -3,15 +3,16 @@
 //
 
 #ifndef INTRODUCT2ALGORITHM_VEC_H
-#define INTRODUCT2ALGORITHM_VEC_H
-
-#define OPERATE_MEMORY
 
 #include <vector>
 #include "iostream"
 #include "malloc.h"
 #include "assert.h"
 #include "math.h"
+
+#define INTRODUCT2ALGORITHM_VEC_H
+
+#define OPERATE_MEMORY
 
 enum characteristic {
     ROW_VEC,
