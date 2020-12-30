@@ -19,7 +19,7 @@ typedef struct imaginaryNumber {
         return other * times;
     }
 
-    operator int() const {//当前类的转换函数，int a= imaginaryNumber实例将有返回值
+    explicit operator int() const {//当前类的转换函数，int a= imaginaryNumber实例将有返回值
 
     }
 
