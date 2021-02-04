@@ -51,6 +51,7 @@ public:
             }
             os << '\n';
         }
+        return os;
     }
 };
 
