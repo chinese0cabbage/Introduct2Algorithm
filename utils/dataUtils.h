@@ -8,8 +8,8 @@
 template <typename T>
 void interChange(T &a,T &b){
     T tmp=a;
-    a=b;
-    b=tmp;
+    a=std::move(b);
+    b=std::move(tmp);
 }
 
 template <typename T>
