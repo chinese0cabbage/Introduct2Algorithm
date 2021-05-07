@@ -28,6 +28,13 @@ namespace sort {
 
 #endif
 
+    enum SortVariety {
+        MERGE,
+        SELECTION,
+        INSERT,
+        SHELL
+    };
+
     template<typename _RandomAccessIterator, typename _Compare>
     inline void mergeSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
                           _Compare __compare = __gnu_cxx::__ops::__iter_less_iter()) {
@@ -42,7 +49,7 @@ namespace sort {
                                     _RandomAccessIterator >)
         //检查迭代器是否可以进行比较
         __glibcxx_function_requires(_LessThanComparableConcept <
-                                    typename iterator_traits<_RandomAccessIterator>::value_type >)
+                                    typename std::iterator_traits<_RandomAccessIterator>::value_type >)
         //检查迭代器范围是否合理
         __glibcxx_requires_valid_range(__first, __last);
         int exchangeMark = 0;
@@ -64,13 +71,11 @@ namespace sort {
     }
 
     template<typename _RandomAccessIterator, typename _Compare>
-    void __unguarded_linear_insert(_RandomAccessIterator __last,_Compare __comp)
-    {
+    void __unguarded_linear_insert(_RandomAccessIterator __last, _Compare __comp) {
         typename std::iterator_traits<_RandomAccessIterator>::value_type __val = _GLIBCXX_MOVE(*__last);
         _RandomAccessIterator __next = __last;
         --__next;
-        while (__comp(__val, __next))
-        {
+        while (__comp(__val, __next)) {
             *__last = _GLIBCXX_MOVE(*__next);
             __last = __next;
             --__next;
@@ -86,7 +91,7 @@ namespace sort {
                                     _RandomAccessIterator >)
         //检查迭代器是否可以进行比较
         __glibcxx_function_requires(_LessThanComparableConcept <
-                                    typename iterator_traits<_RandomAccessIterator>::value_type >)
+                                    typename std::iterator_traits<_RandomAccessIterator>::value_type >)
         //检查迭代器范围是否合理
         __glibcxx_requires_valid_range(__first, __last);
         if (__first == __last) return;
@@ -99,10 +104,19 @@ namespace sort {
                 typename std::iterator_traits<_RandomAccessIterator>::value_type __val = _GLIBCXX_MOVE(*__i);
                 _GLIBCXX_MOVE_BACKWARD3(__first, __i, __i + 1);
                 *__first = _GLIBCXX_MOVE(__val);
-            } else{ //向前遍历寻找合适的位置插入
-                sort::__unguarded_linear_insert(__i,__gnu_cxx::__ops::__val_comp_iter(__compare));
+            } else { //向前遍历寻找合适的位置插入
+                sort::__unguarded_linear_insert(__i, __gnu_cxx::__ops::__val_comp_iter(__compare));
             }
         }
+    }
+
+    template <typename _RandomAccessIterator,typename _Compare>
+    inline void shellSort(_RandomAccessIterator __first,_RandomAccessIterator __last,
+            _Compare __compare=__gnu_cxx::__ops::__iter_less_iter()){
+        __glibcxx_function_requires(_Mutable_RandomAccessIteratorConcept<_RandomAccessIterator>)
+        __glibcxx_function_requires(_LessThanComparableConcept<typename std::iterator_traits<_RandomAccessIterator>::value_type>)
+        __glibcxx_requires_valid_range(__first,__last)
+        std::cout<<__last-__first;
     }
 }
 
