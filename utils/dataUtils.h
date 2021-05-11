@@ -6,14 +6,14 @@
 #define INTRODUCT2ALGORITHM_DATAUTILS_H
 
 template <typename T>
-void interChange(T &a,T &b){
+void __interChange(T &a, T &b){
     T tmp=a;
     a=std::move(b);
     b=std::move(tmp);
 }
 
 template <typename T>
-void interChange(T *a,T *b){
+void __interChange(T *a, T *b){
     T tmp=*a;
     *a=*b;
     *b=tmp;

@@ -8,6 +8,7 @@
 #include "mutex"
 #include "thread"
 #include "algorithm"
+#include "numeric"
 
 #define DEBUG_MODE
 
@@ -17,7 +18,7 @@ namespace sort {
 #ifdef DEBUG_MODE
 
     template<typename _RandomAccessIterator>
-    void debugFun(_RandomAccessIterator __first, _RandomAccessIterator __last) {
+    void __debugFun(_RandomAccessIterator __first, _RandomAccessIterator __last) {
         int exchangeMark = 0;
         while (__first + exchangeMark != __last) {
             std::cout << *(__first + exchangeMark) << "\t";
@@ -36,42 +37,40 @@ namespace sort {
     };
 
     template<typename _RandomAccessIterator, typename _Compare>
-    inline void mergeSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
-                          _Compare __compare = __gnu_cxx::__ops::__iter_less_iter()) {
+    void mergeSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
+                   _Compare __compare = __gnu_cxx::__ops::__iter_less_iter()) {
 #define __type typename std::iterator_traits<_RandomAccessIterator>::value_type
         __glibcxx_function_requires(_Mutable_RandomAccessIteratorConcept < _RandomAccessIterator >)
         __glibcxx_function_requires(_LessThanComparableConcept < __type >)
         __glibcxx_requires_valid_range(__first, __last)
-        int len = __last - __first;
-        if (len == 0 || len == 1) return;
-        if (len == 2) {
+        typename std::iterator_traits<_RandomAccessIterator>::difference_type __len = __last - __first;
+        if (__len == 0 || __len == 1) return;
+        if (__len == 2) {
             if (!__compare(__first, __first + 1))
-                interChange(__first, __first + 1);
+                __interChange(*__first, *(__first + 1));
             return;
         }
 #ifdef DEBUG_MODE
-        debugFun(__first, __last);
+        __debugFun(__first, __last);
 #endif
-        _RandomAccessIterator __aux(__first);
-        for (; __first != __last; __aux++, __first++) {
-            _RandomAccessIterator __aux(__first);
-        }
-        __aux -= len;
-        __first -= len;
-        mergeSort(__aux, __aux + len / 2, __compare);
+        //采用vector作为辅助空间转存排序的元素，违背了泛型编程的初衷
+        //但为了转存迭代器内的元素，重新用内存配置器构造容器并迭代存储是在重复vector内部的工作，因此选择直接调用
+        std::vector<__type> __v(__first, __last);
+        mergeSort(__v.begin(), __v.begin() + __len / 2, __compare);
 #ifdef DEBUG_MODE
-        debugFun(__aux, __aux + len / 2);
+        __debugFun(__v.begin(), __v.begin() + __len / 2);
 #endif
-        mergeSort(__aux + len / 2, __aux + len, __compare);
+        mergeSort(__v.begin() + __len / 2, __v.begin() + __len, __compare);
 #ifdef DEBUG_MODE
-        debugFun(__aux + len / 2, __aux + len);
+        __debugFun(__v.begin() + __len / 2, __v.begin() + __len);
 #endif
-        std::__merge(__aux, __aux + len / 2, __aux + len / 2, __aux + len, __first, __compare);
+        std::__merge(__v.begin(), __v.begin() + __len / 2, __v.begin() + __len / 2, __v.begin() + __len, __first,
+                     __compare);
     }
 
     template<typename _RandomAccessIterator, typename _Compare>
-    inline void selectionSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
-                              _Compare __compare = __gnu_cxx::__ops::__iter_less_iter()) {
+    void selectionSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
+                       _Compare __compare = __gnu_cxx::__ops::__iter_less_iter()) {
         //检查迭代器是否可以随机访问
         __glibcxx_function_requires(_Mutable_RandomAccessIteratorConcept <
                                     _RandomAccessIterator >)
@@ -80,22 +79,23 @@ namespace sort {
                                     typename std::iterator_traits<_RandomAccessIterator>::value_type >)
         //检查迭代器范围是否合理
         __glibcxx_requires_valid_range(__first, __last);
-        int exchangeMark = 0;
+#define __type typename std::iterator_traits<_RandomAccessIterator>::difference_type
+        __type __exchangeMark = 0;
         for (;;) {
 #ifdef DEBUG_MODE
-            debugFun(__first, __last);
+            __debugFun(__first, __last);
 #endif
-            int searchMark = exchangeMark, goalMark = searchMark;
-            while (__first + searchMark != __last) {
-                if (__compare(__first + searchMark, __first + goalMark)) {
-                    goalMark = searchMark;
+            __type __searchMark = __exchangeMark, goalMark = __searchMark;
+            while (__first + __searchMark != __last) {
+                if (__compare(__first + __searchMark, __first + goalMark)) {
+                    goalMark = __searchMark;
                 }
-                searchMark++;
+                __searchMark++;
             };
-            if (__first + exchangeMark == __last) return;
-            interChange(*(__first + exchangeMark), *(__first + goalMark));
-            exchangeMark++;
-        };
+            if (__first + __exchangeMark == __last) return;
+            __interChange(*(__first + __exchangeMark), *(__first + goalMark));
+            __exchangeMark++;
+        }
     }
 
     template<typename _RandomAccessIterator, typename _Compare>
@@ -113,7 +113,7 @@ namespace sort {
 
         for (_RandomAccessIterator __i = __first + 1; __i != __last; ++__i) {
 #ifdef DEBUG_MODE
-            debugFun(__first, __last);
+            __debugFun(__first, __last);
 #endif
             if (__compare(__i, __first)) { //前面已排序元素集体后挪
                 typename std::iterator_traits<_RandomAccessIterator>::value_type __val = std::move(*__i);
@@ -126,26 +126,68 @@ namespace sort {
     }
 
     template<typename _RandomAccessIterator, typename _Compare>
-    inline void shellSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
+    void shellSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
+                   _Compare __compare = __gnu_cxx::__ops::__iter_less_iter()) {
+        __glibcxx_function_requires(_Mutable_RandomAccessIteratorConcept < _RandomAccessIterator >)
+        __glibcxx_function_requires(
+                _LessThanComparableConcept < typename std::iterator_traits<_RandomAccessIterator>::value_type >)
+        __glibcxx_requires_valid_range(__first, __last)
+        typename std::iterator_traits<_RandomAccessIterator>::difference_type __len = __last - __first, __h = 1;
+        while (__h < __len / 3) __h = 3 * __h + 1;
+        while (__h >= 1) {
+            for (int i = __h; i < __len; ++i) {
+#ifdef DEBUG_MODE
+                __debugFun(__first, __last);
+#endif
+                for (int j = i; j >= __h; j -= __h) {
+                    if (__compare(__first + j, __first + j - __h))
+                        __interChange(*(__first + j), *(__first + j - __h));
+                }
+            }
+            __h /= 3;
+        }
+    }
+
+    template<typename _RandomAccessIterator, typename _Compare>
+    _RandomAccessIterator __unguarded_partition(_RandomAccessIterator __first, _RandomAccessIterator __last, _Compare __compare) {
+        _RandomAccessIterator __forward = __first, __back = __last;
+        for (;;) {
+            while (__compare(++__forward, __first)) {
+                if (__forward == __last) break;
+            }
+            while (__compare(__first, --__back)) {
+                if (__back == __first) break;
+            }
+            if (__forward >= __back) break;
+            __interChange(*__forward, *__back);
+        }
+        __interChange(*__first, *__back);
+        return __back;
+    }
+
+    template<typename _RandomAccessIterator, typename _Compare>
+    inline void quickSort(_RandomAccessIterator __first, _RandomAccessIterator __last,
                           _Compare __compare = __gnu_cxx::__ops::__iter_less_iter()) {
         __glibcxx_function_requires(_Mutable_RandomAccessIteratorConcept < _RandomAccessIterator >)
         __glibcxx_function_requires(
                 _LessThanComparableConcept < typename std::iterator_traits<_RandomAccessIterator>::value_type >)
         __glibcxx_requires_valid_range(__first, __last)
-        int len = __last - __first, h = 1;
-        while (h < len / 3) h = 3 * h + 1;
-        while (h >= 1) {
-            for (int i = h; i < len; ++i) {
+        if (__last - __first <= 1) return;
 #ifdef DEBUG_MODE
-                debugFun(__first, __last);
+        __debugFun(__first, __last);
 #endif
-                for (int j = i; j >= h; j -= h) {
-                    if (__compare(__first + j, __first + j - h))
-                        interChange(*(__first + j), *(__first + j - h));
-                }
-            }
-            h /= 3;
-        }
+        _RandomAccessIterator __mid = sort::__unguarded_partition(__first, __last, __compare);
+#ifdef DEBUG_MODE
+        __debugFun(__first, __last);
+#endif
+        quickSort(__first, __mid, __compare);
+#ifdef DEBUG_MODE
+        __debugFun(__first, __mid);
+#endif
+        quickSort(__mid + 1, __last, __compare);
+#ifdef DEBUG_MODE
+        __debugFun(__mid, __last);
+#endif
     }
 }
 
