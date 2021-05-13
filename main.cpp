@@ -31,10 +31,10 @@ int main() {
 //    Matrix<double> matrix(arr, 5, 4);
 //    std::cout << matrix;
     std::vector<double> v(arr,arr+16);
-//    std::__make_heap(v.begin(),v.end(),__gnu_cxx::__ops::__iter_comp_iter(compare));
-    sort::selectionSort(v.begin(),v.end(),__gnu_cxx::__ops::__iter_comp_iter(compare));
-//    sort::__unguarded_partition(v.begin(),v.begin()+2,__gnu_cxx::__ops::__iter_comp_iter(compare));
-//    __interChange(v.begin().operator*(),(v.end()-1).operator*());
+    std::__make_heap(v.begin(),v.end(),__gnu_cxx::__ops::__iter_less_iter());
+    v.push_back(50);
+    std::push_heap(v.begin(),v.end());
+//    sort::selectionSort(v.begin(),v.end(),__gnu_cxx::__ops::__iter_comp_iter(compare));
     std::for_each(v.begin(),v.end(), [=](double i) { std::cout << i << "\t"; });
     return 0;
 }

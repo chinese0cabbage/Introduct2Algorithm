@@ -149,7 +149,8 @@ namespace sort {
     }
 
     template<typename _RandomAccessIterator, typename _Compare>
-    _RandomAccessIterator __unguarded_partition(_RandomAccessIterator __first, _RandomAccessIterator __last, _Compare __compare) {
+    _RandomAccessIterator
+    __unguarded_partition(_RandomAccessIterator __first, _RandomAccessIterator __last, _Compare __compare) {
         _RandomAccessIterator __forward = __first, __back = __last;
         for (;;) {
             while (__compare(++__forward, __first)) {
@@ -188,6 +189,32 @@ namespace sort {
 #ifdef DEBUG_MODE
         __debugFun(__mid, __last);
 #endif
+    }
+}
+
+namespace misunderstand {
+    /**
+     * 判断指定范围内的迭代器序列是否是一个最大/小堆
+     * @tparam _RandomAccessIterator
+     * @tparam _Distance
+     * @tparam _Compare
+     * @param __first
+     * @param __n
+     * @param __comp
+     * @return
+     */
+    template<typename _RandomAccessIterator, typename _Distance, typename _Compare>
+    _Distance __is_heap_until(_RandomAccessIterator __first, _Distance __n,_Compare __comp) {
+        _Distance __parent = 0;
+        for (_Distance __child = 1; __child < __n; ++__child) {
+            // ++__child：目的是遍历两个孩子节点
+            if (__comp(__first + __parent, __first + __child))
+                return __child;
+            //如果__child是奇数的话则证明当前节点的两个孩子节点都已经检查完成，++__parent继续检查下一个节点的孩子节点是否满足要求
+            if ((__child & 1) == 0)
+                ++__parent;
+        }
+        return __n;
     }
 }
 
