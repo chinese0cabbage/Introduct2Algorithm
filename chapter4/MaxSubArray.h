@@ -8,18 +8,18 @@
 #include "vector"
 
 //all caculation include begin and end index
-class MaxSunArray {
+class MaxSubArray {
 public:
-    MaxSunArray(const std::vector<double> &localArr);
+    MaxSubArray(const std::vector<double> &localArr);
 
-    std::pair<int, int> FindMaxSunArray();
+    std::pair<int, int> FindMaxSubArray();
 
 private:
     std::vector<double> _localArr;
 
-    std::pair<std::pair<int, int>, double> FindMaxSunArray(int begin, int end);
+    std::pair<std::pair<int, int>, double> FindMaxSubArray(int begin, int end);
 
-    std::pair<std::pair<int, int>, double> FindMaxSunArrayCrossMid(int begin, int end);
+    std::pair<std::pair<int, int>, double> FindMaxSubArrayCrossMid(int begin, int end);
 };
 
 
