@@ -10,11 +10,13 @@
 #include "algorithm"
 #include "numeric"
 
+#ifndef DEBUG_MODE
 #define DEBUG_MODE
+#endif
 
 #define INTRODUCT2ALGORITHM_SORT_H
 
-namespace sort {
+namespace I2A {
 #ifdef DEBUG_MODE
 
     template<typename _RandomAccessIterator>
@@ -177,7 +179,7 @@ namespace sort {
 #ifdef DEBUG_MODE
         __debugFun(__first, __last);
 #endif
-        _RandomAccessIterator __mid = sort::__unguarded_partition(__first, __last, __compare);
+        _RandomAccessIterator __mid = I2A::__unguarded_partition(__first, __last, __compare);
 #ifdef DEBUG_MODE
         __debugFun(__first, __last);
 #endif
