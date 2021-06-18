@@ -6,6 +6,8 @@
 #include "stdlib.h"
 #include "array"
 #include "iterator"
+#include "set"
+#include "hashtable.h"
 
 #define SIZE 100000
 
@@ -30,6 +32,7 @@ int main() {
     double arr[] = {13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7};
     std::vector<double> v(arr, arr + 16);
     std::cout << "\n";
+    v.reserve(5);
     std::for_each(v.begin(), v.end(), [=](double i) { std::cout << i << "\t"; });
     return 0;
 }
