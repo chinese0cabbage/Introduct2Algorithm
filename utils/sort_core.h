@@ -10,24 +10,17 @@
 #include "algorithm"
 #include "numeric"
 
+#ifndef DEBUG_MODE
 #define DEBUG_MODE
+#endif
+
+#ifdef DEBUG_MODE
+#include "debug_tool.h"
+#endif
 
 #define INTRODUCT2ALGORITHM_SORT_H
 
-namespace sort {
-#ifdef DEBUG_MODE
-
-    template<typename _RandomAccessIterator>
-    void __debugFun(_RandomAccessIterator __first, _RandomAccessIterator __last) {
-        int exchangeMark = 0;
-        while (__first + exchangeMark != __last) {
-            std::cout << *(__first + exchangeMark) << "\t";
-            exchangeMark++;
-        }
-        std::cout << "\n";
-    }
-
-#endif
+namespace I2A {
 
     enum SortVariety {
         MERGE,
@@ -177,7 +170,7 @@ namespace sort {
 #ifdef DEBUG_MODE
         __debugFun(__first, __last);
 #endif
-        _RandomAccessIterator __mid = sort::__unguarded_partition(__first, __last, __compare);
+        _RandomAccessIterator __mid = I2A::__unguarded_partition(__first, __last, __compare);
 #ifdef DEBUG_MODE
         __debugFun(__first, __last);
 #endif
@@ -189,32 +182,6 @@ namespace sort {
 #ifdef DEBUG_MODE
         __debugFun(__mid, __last);
 #endif
-    }
-}
-
-namespace misunderstand {
-    /**
-     * 判断指定范围内的迭代器序列是否是一个最大/小堆
-     * @tparam _RandomAccessIterator
-     * @tparam _Distance
-     * @tparam _Compare
-     * @param __first
-     * @param __n
-     * @param __comp
-     * @return
-     */
-    template<typename _RandomAccessIterator, typename _Distance, typename _Compare>
-    _Distance __is_heap_until(_RandomAccessIterator __first, _Distance __n,_Compare __comp) {
-        _Distance __parent = 0;
-        for (_Distance __child = 1; __child < __n; ++__child) {
-            // ++__child：目的是遍历两个孩子节点
-            if (__comp(__first + __parent, __first + __child))
-                return __child;
-            //如果__child是奇数的话则证明当前节点的两个孩子节点都已经检查完成，++__parent继续检查下一个节点的孩子节点是否满足要求
-            if ((__child & 1) == 0)
-                ++__parent;
-        }
-        return __n;
     }
 }
 
